@@ -54,6 +54,7 @@ public class ChaikinApp extends JPanel implements MouseListener, KeyListener {
     // Chaikin's algorithm: Generate next step of smoothing
     private List<Point> generateChaikinStep(List<Point> points) {
         List<Point> newPoints = new ArrayList<>();
+        newPoints.add(points.get(0));
         for (int i = 0; i < points.size() - 1; i++) {
             Point p1 = points.get(i);
             Point p2 = points.get(i + 1);
@@ -62,6 +63,10 @@ public class ChaikinApp extends JPanel implements MouseListener, KeyListener {
             Point r = new Point((int) (0.25 * p1.x + 0.75 * p2.x), (int) (0.25 * p1.y + 0.75 * p2.y));
             newPoints.add(q);
             newPoints.add(r);
+        }
+        newPoints.add(points.get(points.size()-1));
+        if (points.size() < 3) {
+            return null;
         }
         return newPoints;
     }
@@ -89,7 +94,7 @@ public class ChaikinApp extends JPanel implements MouseListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (!controlPoints.isEmpty()) {
+            if (!controlPoints.isEmpty() && controlPoints.size() > 2) {
                 computeChaikinSteps();
                 animating = true;
                 currentStep = 0;
